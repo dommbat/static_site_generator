@@ -170,5 +170,32 @@ the **same** even with inline stuff
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
         )
 
+
+    def test_extract_title_simple(self):
+        md = "# Hello"
+        self.assertEqual(extract_title(md), "Hello")
+
+    def test_extract_title_with_whitespace(self):
+        md = "#   Tolkien Fan Club   "
+        self.assertEqual(extract_title(md), "Tolkien Fan Club")
+
+    def test_extract_title_with_content(self):
+        md = "# My Title\n\nSome content here"
+        self.assertEqual(extract_title(md), "My Title")
+
+    def test_extract_title_ignores_h2(self):
+        md = "## Second Level\n# Main Title"
+        self.assertEqual(extract_title(md), "Main Title")
+
+    def test_extract_title_no_h1_raises(self):
+        md = "## Only h2\n### Only h3"
+        with self.assertRaises(ValueError):
+            extract_title(md)
+
+    def test_extract_title_empty_raises(self):
+        md = ""
+        with self.assertRaises(ValueError):
+            extract_title(md)
+
 if __name__ == "__main__":
     unittest.main()

@@ -44,7 +44,7 @@ def text_node_to_html_node(text_node):
     elif text_node.type == TextType.LINK:
         return LeafNode("a", text_node.text, {"href": text_node.link})
     elif text_node.type == TextType.IMAGES:
-        return LeafNode("img", None, {"src": text_node.link})
+        return LeafNode("img", "", {"src": text_node.link, "alt": text_node.text})
     else:
         raise ValueError(f"Unsupported TextType: {text_node.type}")
     
@@ -147,5 +147,17 @@ def block_to_block_type(block):
         return BlockType.PARAGRAPH
 
 
+def extract_title(markdown):
+    """Extract the h1 header from markdown content.
+    
+    Returns the text of the h1 header (line starting with single #).
+    Raises ValueError if no h1 header is found.
+    """
+    lines = markdown.split("\n")
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("# ") and not stripped.startswith("## "):
+            return stripped[2:].strip()
+    raise ValueError("No h1 header found in markdown")
 
     
